@@ -1,0 +1,14 @@
+name: 'Publish to Crates.io'
+description: 'Publishes Rust crates to Crates.io'
+
+inputs:
+  token:
+    description: 'Crates.io API token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Publish to Crates.io
+      shell: bash
+      run: cargo publish --token ${{ inputs.token }}

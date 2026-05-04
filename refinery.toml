@@ -1,0 +1,36 @@
+refinery_version = "2.0.0"
+
+[project]
+name = "type-forge"
+lang = "rust"
+description = "Data-to-code pipeline for Rust, TypeScript, and Kotlin"
+license = "MIT"
+
+[naming]
+binary = "{artifact}-{os}-{arch}{abi}"
+package = "{artifact}-{version}-{os}-{arch}{abi}.{ext}"
+
+[artifacts.type-forge]
+type = "bin"
+source = "type-forge"
+packages = ["tar.gz", "zip", "deb", "rpm", "msi"]
+
+[artifacts.type-forge.targets.linux]
+os = "linux"
+archs = ["x86_64", "aarch64"]
+abis = ["gnu", "musl"]
+
+[artifacts.type-forge.targets.windows]
+os = "windows"
+archs = ["x86_64"]
+abis = ["msvc", "gnu"]
+
+[artifacts.type-forge.targets.darwin]
+os = "darwin"
+archs = ["x86_64", "aarch64"]
+
+[[post_build]]
+id = "publish-crates"
+action = "./.github/actions/publish-crates"
+with = { token = "${{ secrets.CARGO_REGISTRY_TOKEN }}" }
+once = true
