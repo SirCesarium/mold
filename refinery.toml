@@ -1,4 +1,4 @@
-refinery_version = "v2.0.2"
+refinery_version = "v2.0.3"
 
 [project]
 name = "type-forge"
