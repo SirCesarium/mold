@@ -99,13 +99,13 @@ jobs:
               run: cargo install cargo-wix
               shell: bash
             - name: Build Artifact
-              uses: SirCesarium/refinery@v2.0.1
+              uses: SirCesarium/refinery@v2.0.2
               with:
                 abi: ${{ matrix.abi }}
                 arch: ${{ matrix.arch }}
                 artifact: ${{ matrix.artifact }}
                 os: ${{ matrix.os }}
-                version: v2.0.1
+                version: v2.0.2
     teardown:
         name: Global Post-Build Tasks
         runs-on: ubuntu-latest
