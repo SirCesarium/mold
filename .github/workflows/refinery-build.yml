@@ -10,41 +10,9 @@ permissions:
     contents: write
     packages: write
 jobs:
-    setup:
-        name: Setup and Global Checks
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v6
-            - name: Setup Rust
-              uses: actions-rust-lang/setup-rust-toolchain@v1
-              with:
-                cache: true
-            - name: Install ARM Linker
-              if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc )
-              shell: bash
-            - name: Install Musl Tools
-              if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y musl-tools && ( sudo ln -sf $(which musl-gcc) /usr/bin/x86_64-linux-musl-gcc 2>/dev/null || sudo ln -sf /usr/bin/musl-gcc /usr/bin/x86_64-linux-musl-gcc )
-              shell: bash
-            - name: Install cargo-deb
-              if: runner.os == 'Linux'
-              run: cargo install cargo-deb
-              shell: bash
-            - name: Install cargo-generate-rpm
-              if: runner.os == 'Linux'
-              run: cargo install cargo-generate-rpm
-              shell: bash
-            - name: Install cargo-wix
-              if: runner.os == 'Windows'
-              run: cargo install cargo-wix
-              shell: bash
     build:
         name: Build ${{ matrix.artifact }} (${{ matrix.os }}-${{ matrix.arch }})
         runs-on: ${{ matrix.runs_on }}
-        needs:
-            - setup
         strategy:
             fail-fast: true
             matrix:
@@ -100,28 +68,28 @@ jobs:
               shell: bash
             - name: Install Musl Tools
               if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y musl-tools && ( sudo ln -sf $(which musl-gcc) /usr/bin/x86_64-linux-musl-gcc 2>/dev/null || sudo ln -sf /usr/bin/musl-gcc /usr/bin/x86_64-linux-musl-gcc )
+              run: sudo apt-get update && sudo apt-get install -y musl-tools && [ -f /usr/bin/x86_64-linux-musl-gcc ] || sudo ln -sf /usr/bin/musl-gcc /usr/bin/x86_64-linux-musl-gcc
               shell: bash
             - name: Install cargo-deb
               if: runner.os == 'Linux'
-              run: cargo install cargo-deb
+              run: cargo install cargo-binstall 2>/dev/null; cargo binstall -y cargo-deb || cargo install cargo-deb
               shell: bash
             - name: Install cargo-generate-rpm
               if: runner.os == 'Linux'
-              run: cargo install cargo-generate-rpm
+              run: cargo install cargo-binstall 2>/dev/null; cargo binstall -y cargo-generate-rpm || cargo install cargo-generate-rpm
               shell: bash
             - name: Install cargo-wix
               if: runner.os == 'Windows'
               run: cargo install cargo-wix
               shell: bash
             - name: Build Artifact
-              uses: SirCesarium/refinery@v2.0.8
+              uses: SirCesarium/refinery@v2.0.9
               with:
                 abi: ${{ matrix.abi }}
                 arch: ${{ matrix.arch }}
                 artifact: ${{ matrix.artifact }}
                 os: ${{ matrix.os }}
-                version: v2.0.8
+                version: v2.0.9
     teardown:
         name: Global Post-Build Tasks
         runs-on: ubuntu-latest
