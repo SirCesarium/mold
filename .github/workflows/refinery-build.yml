@@ -20,6 +20,14 @@ jobs:
               uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                 cache: true
+            - name: Install ARM Linker
+              if: runner.os == 'Linux'
+              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc )
+              shell: bash
+            - name: Install Musl Tools
+              if: runner.os == 'Linux'
+              run: sudo apt-get update && sudo apt-get install -y musl-tools && ( sudo ln -sf $(which musl-gcc) /usr/bin/x86_64-linux-musl-gcc 2>/dev/null || sudo ln -sf /usr/bin/musl-gcc /usr/bin/x86_64-linux-musl-gcc )
+              shell: bash
             - name: Install cargo-deb
               if: runner.os == 'Linux'
               run: cargo install cargo-deb
@@ -86,6 +94,14 @@ jobs:
               uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                 cache: true
+            - name: Install ARM Linker
+              if: runner.os == 'Linux'
+              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc )
+              shell: bash
+            - name: Install Musl Tools
+              if: runner.os == 'Linux'
+              run: sudo apt-get update && sudo apt-get install -y musl-tools && ( sudo ln -sf $(which musl-gcc) /usr/bin/x86_64-linux-musl-gcc 2>/dev/null || sudo ln -sf /usr/bin/musl-gcc /usr/bin/x86_64-linux-musl-gcc )
+              shell: bash
             - name: Install cargo-deb
               if: runner.os == 'Linux'
               run: cargo install cargo-deb
@@ -99,13 +115,13 @@ jobs:
               run: cargo install cargo-wix
               shell: bash
             - name: Build Artifact
-              uses: SirCesarium/refinery@v2.0.7
+              uses: SirCesarium/refinery@v2.0.8
               with:
                 abi: ${{ matrix.abi }}
                 arch: ${{ matrix.arch }}
                 artifact: ${{ matrix.artifact }}
                 os: ${{ matrix.os }}
-                version: v2.0.7
+                version: v2.0.8
     teardown:
         name: Global Post-Build Tasks
         runs-on: ubuntu-latest
