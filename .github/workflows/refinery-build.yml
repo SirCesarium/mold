@@ -59,7 +59,7 @@ jobs:
                 cache: true
             - name: Install ARM Linker
               if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc ) && sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-musl-gcc 2>/dev/null || true
+              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools && sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc && sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-musl-gcc || true
               shell: bash
             - name: Install Musl Tools
               if: runner.os == 'Linux'
@@ -67,24 +67,24 @@ jobs:
               shell: bash
             - name: Install cargo-deb
               if: runner.os == 'Linux'
-              run: cargo install cargo-binstall 2>/dev/null; cargo binstall -y cargo-deb || cargo install cargo-deb
+              run: cargo install cargo-binstall 2>&1; cargo binstall -y cargo-deb || cargo install cargo-deb 2>&1
               shell: bash
             - name: Install cargo-generate-rpm
               if: runner.os == 'Linux'
-              run: cargo install cargo-binstall 2>/dev/null; cargo binstall -y cargo-generate-rpm || cargo install cargo-generate-rpm
+              run: cargo install cargo-binstall 2>&1; cargo binstall -y cargo-generate-rpm || cargo install cargo-generate-rpm 2>&1
               shell: bash
             - name: Install cargo-wix
               if: runner.os == 'Windows'
               run: cargo install cargo-wix
               shell: bash
             - name: Build Artifact
-              uses: SirCesarium/refinery@v2.0.11
+              uses: SirCesarium/refinery@v2.0.13
               with:
                 abi: ${{ matrix.abi }}
                 arch: ${{ matrix.arch }}
                 artifact: ${{ matrix.artifact }}
                 os: ${{ matrix.os }}
-                version: v2.0.11
+                version: v2.0.13
     teardown:
         name: Global Post-Build Tasks
         runs-on: ubuntu-latest
