@@ -32,11 +32,6 @@ jobs:
                       abi: gnu
                     - artifact: type-forge
                       os: linux
-                      arch: aarch64
-                      runs_on: ubuntu-latest
-                      abi: musl
-                    - artifact: type-forge
-                      os: linux
                       arch: x86_64
                       runs_on: ubuntu-latest
                       abi: gnu
@@ -64,7 +59,7 @@ jobs:
                 cache: true
             - name: Install ARM Linker
               if: runner.os == 'Linux'
-              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc )
+              run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools && ( sudo ln -sf $(which aarch64-linux-gnu-gcc) /usr/bin/aarch64-linux-gnu-gcc 2>/dev/null || sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc ) && sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-musl-gcc 2>/dev/null || true
               shell: bash
             - name: Install Musl Tools
               if: runner.os == 'Linux'
